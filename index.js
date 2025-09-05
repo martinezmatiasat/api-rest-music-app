@@ -1,10 +1,10 @@
-console.log('Iniciando API REST...');
-
 require('module-alias/register');
 const dotenv = require('dotenv');
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const connectDB = require('@/database/connection');
+const adminRoutes = require('@/routes/admin');
 const albumRoutes = require('@/routes/albums');
 const artistRoutes = require('@/routes/artists');
 const songRoutes = require('@/routes/songs');
@@ -22,11 +22,14 @@ app.use(cors({
     } else {
       callback(new Error('No autorizado por CORS'));
     }
-  }
+  },
+  credentials: true
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
+app.use('/api/admin', adminRoutes);
 app.use('/api/albums', albumRoutes);
 app.use('/api/artists', artistRoutes);
 app.use('/api/songs', songRoutes);

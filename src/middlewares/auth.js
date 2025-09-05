@@ -8,13 +8,13 @@ const checkAuth = (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    req.userId = decoded.id;
 
     next();
   } catch (error) {
     return res.status(403).json({ message: 'Token no válido o expirado' });
   }
-}
+};
 
 module.exports = {
   checkAuth

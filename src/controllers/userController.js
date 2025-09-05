@@ -79,7 +79,7 @@ const login = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'Lax',
-      domain: process.env.COOKIE_DOMAIN || 'localhost',
+      //domain: process.env.COOKIE_DOMAIN || 'localhost',
       maxAge: 30 * 24 * 60 * 60 * 1000
     }).status(200).json({ result: userToReturn });
 

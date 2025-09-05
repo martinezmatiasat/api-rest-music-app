@@ -1,14 +1,20 @@
-// Importar dependencias
-const express = require('express');
-
-// Importar controlador
+const { Router } = require('express');
 const artistController = require('@/controllers/artistController.js');
+const upload = require('@/helpers/upload.js');
+const router = Router();
 
-// Cargar Router
-const router = express.Router();
-
-// Definir rutas
+// Get
 router.get("/test", artistController.test);
+router.get("/", artistController.getArtists);
+router.get("/:id", artistController.getArtistById);
 
-// Exportar rutas
+// Post
+router.post("/", upload.single('image'), artistController.createArtist);
+
+// Patch
+router.patch("/:id", upload.single('image'), artistController.updateArtist);
+
+// Delete
+router.delete("/:id", artistController.deleteArtist);
+
 module.exports = router;

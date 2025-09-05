@@ -9,7 +9,7 @@ router.get('/test', checkAuth, userController.test);
 router.get('/get/:id', checkAuth, userController.getUser);
 
 // Post
-router.post('/create', checkAuth, userController.createUser);
+router.post('/create', userController.createUser);
 router.post('/login', userController.login);
 
 // Patch

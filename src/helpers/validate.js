@@ -1,60 +1,181 @@
 const validator = require('validator');
 
 const validateUser = (user) => {
-  let error = null;
-
   if (!user.name) {
-    error = new Error('El nombre es obligatorio.');
+    return { ok: false, message: 'El nombre es obligatorio.' };
   } else if (typeof user.name !== 'string') {
-    error = new Error('El nombre debe ser una cadena de texto.');
+    return { ok: false, message: 'El nombre debe ser una cadena de texto.' };
   } else if (!validator.isLength(user.name, { min: 2, max: 100 })) {
-    error = new Error('El nombre debe tener entre 2 y 100 caracteres.');
+    return { ok: false, message: 'El nombre debe tener entre 2 y 100 caracteres.' };
   }
 
   if (user.surname && typeof user.surname !== 'string') {
-    error = new Error('El apellido debe ser una cadena de texto.');
+    return { ok: false, message: 'El apellido debe ser una cadena de texto.' };
   } else if (!validator.isLength(user.surname, { min: 2, max: 100 })) {
-    error = new Error('El apellido debe tener entre 2 y 100 caracteres.');
+    return { ok: false, message: 'El apellido debe tener entre 2 y 100 caracteres.' };
   }
 
   if (!user.nickname) {
-    error = new Error('El apodo es obligatorio.');
+    return { ok: false, message: 'El apodo es obligatorio.' };
   } else if (typeof user.nickname !== 'string') {
-    error = new Error('El apodo debe ser una cadena de texto.');
+    return { ok: false, message: 'El apodo debe ser una cadena de texto.' };
   } else if (!validator.isLength(user.nickname, { min: 2, max: 100 })) {
-    error = new Error('El apodo debe tener entre 2 y 100 caracteres.');
+    return { ok: false, message: 'El apodo debe tener entre 2 y 100 caracteres.' };
   }
 
   if (!user.email) {
-    error = new Error('El correo electrónico es obligatorio.');
+    return { ok: false, message: 'El correo electrónico es obligatorio.' };
   } else if (typeof user.email !== 'string') {
-    error = new Error('El correo electrónico debe ser una cadena de texto.');
+    return { ok: false, message: 'El correo electrónico debe ser una cadena de texto.' };
   } else if (!validator.isEmail(user.email)) {
-    error = new Error('El correo electrónico no es válido.');
+    return { ok: false, message: 'El correo electrónico no es válido.' };
   }
 
   if (!user.password) {
-    error = new Error('La contraseña es obligatoria.');
+    return { ok: false, message: 'La contraseña es obligatoria.' };
   } else if (typeof user.password !== 'string') {
-    error = new Error('La contraseña debe ser una cadena de texto.');
+    return { ok: false, message: 'La contraseña debe ser una cadena de texto.' };
   } else if (!validator.isLength(user.password, { min: 6 })) {
-    error = new Error('La contraseña debe tener al menos 6 caracteres.');
+    return { ok: false, message: 'La contraseña debe tener al menos 6 caracteres.' };
+  }
+
+  if (!user.password) {
+    return { ok: false, message: 'La contraseña es obligatoria.' };
+  } else if (typeof user.password !== 'string') {
+    return { ok: false, message: 'La contraseña debe ser una cadena de texto.' };
+  } else if (!validator.isLength(user.password, { min: 6 })) {
+    return { ok: false, message: 'La contraseña debe tener al menos 6 caracteres.' };
   }
 
   if (user.role && typeof user.role !== 'string') {
-    error = new Error('El rol debe ser una cadena de texto.');
+    return { ok: false, message: 'El rol debe ser una cadena de texto.' };
   } else if (!['user', 'admin'].includes(user.role)) {
-    error = new Error('El rol es inválido.');
+    return { ok: false, message: 'El rol es inválido.' };
   }
 
-  if (error) {
-    error.status = 400;
-    throw error;
+  return { ok: true };
+};
+
+const validateAdmin = (admin) => {
+  if (!admin.email) {
+    return { ok: false, message: 'El correo electrónico es obligatorio.' };
+  } else if (typeof admin.email !== 'string') {
+    return { ok: false, message: 'El correo electrónico debe ser una cadena de texto.' };
+  } else if (!validator.isEmail(admin.email)) {
+    return { ok: false, message: 'El correo electrónico no es válido.' };
   }
 
-  return true;
+  if (!admin.password) {
+    return { ok: false, message: 'La contraseña es obligatoria.' };
+  } else if (typeof admin.password !== 'string') {
+    return { ok: false, message: 'La contraseña debe ser una cadena de texto.' };
+  } else if (!validator.isLength(admin.password, { min: 4 })) {
+    return { ok: false, message: 'La contraseña debe tener al menos 4 caracteres.' };
+  }
+
+  return { ok: true };
+};
+
+const validateArtist = (artist) => {
+  if (!artist.name) {
+    return { ok: false, message: 'El nombre es obligatorio.' };
+  } else if (typeof artist.name !== 'string') {
+    return { ok: false, message: 'El nombre debe ser una cadena de texto.' };
+  } else if (!validator.isLength(artist.name, { min: 2, max: 100 })) {
+    return { ok: false, message: 'El nombre debe tener entre 2 y 100 caracteres.' };
+  }
+
+  if (!artist.description) {
+    return { ok: false, message: 'La descripción es obligatoria.' };
+  } else if (typeof artist.description !== 'string') {
+    return { ok: false, message: 'La descripción debe ser una cadena de texto.' };
+  } else if (!validator.isLength(artist.description, { min: 20, max: 1000 })) {
+    return { ok: false, message: 'La descripción debe tener entre 20 y 1000 caracteres.' };
+  }
+
+  if (artist.image && !/\\.(jpg|jpeg|png|gif)$/i.test(artist.image)) {
+    return { ok: false, message: 'La imagen debe tener un formato válido (jpg, jpeg, png, gif).' };
+  }
+
+  return { ok: true };
+};
+
+const validateAlbum = (album) => {
+  if (!album.title) {
+    return { ok: false, message: 'El título es obligatorio.' };
+  } else if (typeof album.title !== 'string') {
+    return { ok: false, message: 'El título debe ser una cadena de texto.' };
+  } else if (!validator.isLength(album.title, { min: 2, max: 100 })) {
+    return { ok: false, message: 'El título debe tener entre 2 y 100 caracteres.' };
+  }
+
+  if (!album.artist) {
+    return { ok: false, message: 'El artista es obligatorio.' };
+  } else if (typeof album.artist !== 'string') {
+    return { ok: false, message: 'El artista debe ser una cadena de texto.' };
+  }
+
+  if (!album.description) {
+    return { ok: false, message: 'La descripción es obligatoria.' };
+  } else if (typeof album.description !== 'string') {
+    return { ok: false, message: 'La descripción debe ser una cadena de texto.' };
+  } else if (!validator.isLength(album.description, { min: 20, max: 1000 })) {
+    return { ok: false, message: 'La descripción debe tener entre 20 y 1000 caracteres.' };
+  }
+
+  if (!album.year) {
+    return { ok: false, message: 'El año es obligatorio y debe ser válido.' };
+  } else if (typeof album.year !== 'number' || album.year < 1900 || album.year > new Date().getFullYear()) {
+    return { ok: false, message: 'El año debe ser un número válido.' };
+  }
+
+  if (album.image && !/\\.(jpg|jpeg|png|gif)$/i.test(album.image)) {
+    return { ok: false, message: 'La imagen debe tener un formato válido (jpg, jpeg, png, gif).' };
+  }
+
+  return { ok: true };
+};
+
+const validateSong = (song) => {
+  if (!song.title) {
+    return { ok: false, message: 'El título es obligatorio.' };
+  } else if (typeof song.title !== 'string') {
+    return { ok: false, message: 'El título debe ser una cadena de texto.' };
+  } else if (!validator.isLength(song.title, { min: 2, max: 100 })) {
+    return { ok: false, message: 'El título debe tener entre 2 y 100 caracteres.' };
+  }
+
+  if (!song.duration) {
+    return { ok: false, message: 'La duración es obligatoria.' };
+  } else if (typeof song.duration !== 'number' || song.duration <= 0) {
+    return { ok: false, message: 'La duración debe ser un número positivo.' };
+  }
+
+  if (!song.album) {
+    return { ok: false, message: 'El álbum es obligatorio.' };
+  } else if (typeof song.album !== 'string') {
+    return { ok: false, message: 'El álbum debe ser una cadena de texto.' };
+  }
+
+  if (!song.file) {
+    return { ok: false, message: 'El archivo de la canción es obligatorio.' };
+  } else if (!/\\.(mp3|wav|flac)$/i.test(song.file)) {
+    return { ok: false, message: 'El archivo de la canción debe tener un formato válido (mp3, wav, flac).' };
+  }
+
+  if (!song.trackNumber) {
+    return { ok: false, message: 'El número de pista es obligatorio.' };
+  } else if (typeof song.trackNumber !== 'number' || song.trackNumber <= 0) {
+    return { ok: false, message: 'El número de pista debe ser un número positivo.' };
+  }
+
+  return { ok: true };
 };
 
 module.exports = {
-  validateUser
+  validateUser,
+  validateAdmin,
+  validateArtist,
+  validateAlbum,
+  validateSong
 };
