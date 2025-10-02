@@ -1,5 +1,6 @@
 const Artist = require('@/models/Artist');
 const { validateArtist } = require('@/helpers/validate');
+const deleteFile = require('@/helpers/deleteFile');
 
 // Get
 const test = (req, res) => {
@@ -8,7 +9,7 @@ const test = (req, res) => {
 
 const getArtists = async (req, res) => {
   try {
-    const artists = await Artist.find().populate('albums');
+    const artists = await Artist.find();
     return res.status(200).json({ message: 'Artistas obtenidos exitosamente.', result: artists });
   } catch (error) {
     return res.status(500).json({ message: 'Error en la solicitud.', error: error.message });
@@ -19,7 +20,7 @@ const getArtistById = async (req, res) => {
   try {
     const artistId = req.params.id;
 
-    const artist = await Artist.findById(artistId).populate('albums');
+    const artist = await Artist.findById(artistId);
     if (!artist) {
       return res.status(404).json({ message: 'Artista no encontrado.' });
     }
@@ -71,8 +72,8 @@ const updateArtist = async (req, res) => {
       return res.status(404).json({ message: 'Artista no encontrado.' });
     }
 
-    if (artist.image && artist.image !== updateData.image) {
-      fs.unlinkSync(path.join(__dirname, '../uploads', artist.image));
+    if (artist.image && updateData.image) {
+      deleteFile(artist.image);
     }
 
     Object.assign(artist, updateData);
@@ -89,14 +90,16 @@ const deleteArtist = async (req, res) => {
   try {
     const artistId = req.params.id;
 
-    const artist = await Artist.findByIdAndDelete(artistId);
+    const artist = await Artist.findById(artistId);
     if (!artist) {
       return res.status(404).json({ message: 'Artista no encontrado.' });
     }
 
     if (artist.image) {
-      fs.unlinkSync(path.join(__dirname, '../uploads', artist.image));
+      deleteFile(artist.image);
     }
+
+    await artist.remove();
 
     return res.status(200).json({ message: 'Artista eliminado exitosamente.', result: artist });
   } catch (error) {

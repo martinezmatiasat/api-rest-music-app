@@ -1,5 +1,6 @@
 const Album = require('@/models/Album');
 const { validateAlbum } = require('@/helpers/validate');
+const deleteFile = require('@/helpers/deleteFile');
 
 // Get
 const test = (req, res) => {
@@ -33,7 +34,12 @@ const getAlbumById = async (req, res) => {
 // Post
 const createAlbum = async (req, res) => {
   try {
-    const albumData = req.body;
+    const albumData = {
+      ...req.body,
+      year: parseInt(req.body.year, 10),
+      songs: JSON.parse(req.body.songs)
+    };
+    
     if (req.file) {
       albumData.image = req.file.filename;
     }
@@ -56,7 +62,13 @@ const createAlbum = async (req, res) => {
 const updateAlbum = async (req, res) => {
   try {
     const albumId = req.params.id;
-    const updateData = req.body;
+
+    const updateData = { 
+      ...req.body,
+      year: parseInt(req.body.year, 10),
+      songs: JSON.parse(req.body.songs)
+    };
+
     if (req.file) {
       updateData.image = req.file.filename;
     }
@@ -71,8 +83,8 @@ const updateAlbum = async (req, res) => {
       return res.status(404).json({ message: 'Álbum no encontrado.' });
     }
 
-    if (album.image && album.image !== updateData.image) {
-      fs.unlinkSync(path.join(__dirname, '../uploads', album.image));
+    if (album.image && updateData.image) {
+      deleteFile(album.image);
     }
 
     Object.assign(album, updateData);
@@ -89,14 +101,16 @@ const deleteAlbum = async (req, res) => {
   try {
     const albumId = req.params.id;
 
-    const album = await Album.findByIdAndDelete(albumId);
+    const album = await Album.findById(albumId);
     if (!album) {
       return res.status(404).json({ message: 'Álbum no encontrado.' });
     }
 
     if (album.image) {
-      fs.unlinkSync(path.join(__dirname, '../uploads', album.image));
+      deleteFile(album.image);
     }
+
+    await album.remove();
 
     return res.status(200).json({ message: 'Álbum eliminado exitosamente.', result: album });
   } catch (error) {

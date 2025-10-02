@@ -93,7 +93,7 @@ const validateArtist = (artist) => {
     return { ok: false, message: 'La descripción debe tener entre 20 y 1000 caracteres.' };
   }
 
-  if (artist.image && !/\\.(jpg|jpeg|png|gif)$/i.test(artist.image)) {
+  if (artist.image && !/\.(jpg|jpeg|png|gif)$/i.test(artist.image)) {
     return { ok: false, message: 'La imagen debe tener un formato válido (jpg, jpeg, png, gif).' };
   }
 
@@ -129,7 +129,7 @@ const validateAlbum = (album) => {
     return { ok: false, message: 'El año debe ser un número válido.' };
   }
 
-  if (album.image && !/\\.(jpg|jpeg|png|gif)$/i.test(album.image)) {
+  if (album.image && !/\.(jpg|jpeg|png|gif)$/i.test(album.image)) {
     return { ok: false, message: 'La imagen debe tener un formato válido (jpg, jpeg, png, gif).' };
   }
 
@@ -147,26 +147,22 @@ const validateSong = (song) => {
 
   if (!song.duration) {
     return { ok: false, message: 'La duración es obligatoria.' };
-  } else if (typeof song.duration !== 'number' || song.duration <= 0) {
-    return { ok: false, message: 'La duración debe ser un número positivo.' };
+  } else if (song.duration < 10) {
+    return { ok: false, message: 'La duración mínima es de 10 segundos.' };
+  } else if (song.duration > 3600) {
+    return { ok: false, message: 'La duración máxima es de 1 hora (3600 segundos).' };
   }
 
-  if (!song.album) {
-    return { ok: false, message: 'El álbum es obligatorio.' };
-  } else if (typeof song.album !== 'string') {
-    return { ok: false, message: 'El álbum debe ser una cadena de texto.' };
+  if (!song.year) {
+    return { ok: false, message: 'El año es obligatorio.' };
+  } else if (typeof song.year !== 'number' || song.year < 1900 || song.year > new Date().getFullYear()) {
+    return { ok: false, message: 'El año debe ser un número válido.' };
   }
 
-  if (!song.file) {
-    return { ok: false, message: 'El archivo de la canción es obligatorio.' };
-  } else if (!/\\.(mp3|wav|flac)$/i.test(song.file)) {
-    return { ok: false, message: 'El archivo de la canción debe tener un formato válido (mp3, wav, flac).' };
-  }
-
-  if (!song.trackNumber) {
-    return { ok: false, message: 'El número de pista es obligatorio.' };
-  } else if (typeof song.trackNumber !== 'number' || song.trackNumber <= 0) {
-    return { ok: false, message: 'El número de pista debe ser un número positivo.' };
+  if (!song.audio) {
+    return { ok: false, message: 'El archivo de audio es obligatorio.' };
+  } else if (!/\.(mp3|wav|flac)$/i.test(song.audio)) {
+    return { ok: false, message: 'El archivo de audio debe tener un formato válido (mp3, wav, flac).' };
   }
 
   return { ok: true };

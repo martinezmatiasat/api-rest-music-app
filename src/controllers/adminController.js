@@ -1,46 +1,9 @@
 const Admin = require('@/models/Admin');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const { validateAdmin } = require('@/helpers/validate');
 
 const test = (req, res) => {
   res.json({ message: "¡Ruta de prueba de administrador funcionando!" });
-};
-
-const login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email y contraseña son obligatorios.' });
-    }
-
-    const admin = await Admin.findOne({ email });
-    if (!admin) {
-      return res.status(400).json({ message: 'Credenciales inválidas.' });
-    }
-
-    const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Credenciales inválidas.' });
-    }
-
-    const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
-
-    const adminToReturn = admin.toObject();
-    delete adminToReturn.password;
-
-    return res.cookie('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Lax',
-      //domain: process.env.COOKIE_DOMAIN || 'localhost',
-      maxAge: 30 * 24 * 60 * 60 * 1000
-    }).status(200).json({ result: adminToReturn });
-
-  } catch (error) {
-    return res.status(500).json({ message: 'Error en la solicitud.', error: error.message });
-  }
 };
 
 const createAdmin = async (req, res) => {
@@ -97,7 +60,6 @@ const updatePassword = async (req, res) => {
 
 module.exports = {
   test,
-  login,
   createAdmin,
   updatePassword
 };

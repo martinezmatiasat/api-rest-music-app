@@ -14,9 +14,15 @@ const artistSchema = new Schema({
     default: 'default.jpg' 
   },
   albums: [
-    { 
-      type: Schema.Types.ObjectId, 
-      ref: 'Album' 
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Album'
+    }
+  ],
+  songs: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Song'
     }
   ]
 });

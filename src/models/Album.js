@@ -5,11 +5,6 @@ const albumSchema = new Schema({
     type: String, 
     required: true 
   },
-  artist: { 
-    type: Schema.Types.ObjectId, 
-    ref: 'Artist', 
-    required: true 
-  },
   description: { 
     type: String, 
     required: true 
@@ -21,6 +16,11 @@ const albumSchema = new Schema({
   image: { 
     type: String, 
     default: 'default.jpg' 
+  },
+  artist: { 
+    type: Schema.Types.ObjectId, 
+    ref: 'Artist', 
+    required: true 
   },
   songs: [
     {

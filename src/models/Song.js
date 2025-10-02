@@ -9,17 +9,17 @@ const songSchema = new Schema({
     type: Number, 
     required: true 
   },
-  album: { 
-    type: Schema.Types.ObjectId, 
-    ref: 'Album', 
+  year: { 
+    type: Number, 
     required: true 
   },
-  file: { 
+  audio: { 
     type: String, 
     required: true 
   },
-  trackNumber: { 
-    type: Number, 
+  artist: { 
+    type: Schema.Types.ObjectId, 
+    ref: 'Artist', 
     required: true 
   }
 });

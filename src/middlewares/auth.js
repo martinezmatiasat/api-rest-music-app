@@ -7,7 +7,7 @@ const checkAuth = (req, res, next) => {
       return res.status(401).json({ message: 'No se proporcionó token de autenticación.' });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
     req.userId = decoded.id;
 
     next();
