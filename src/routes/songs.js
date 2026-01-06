@@ -7,6 +7,7 @@ const router = Router();
 router.get("/test", songController.test);
 router.get("/", songController.getSongs);
 router.get("/:id", songController.getSongById);
+router.get("/artist/:artistId", songController.getSongsByArtist);
 
 // Post
 router.post("/", upload.single('audio'), songController.createSong);

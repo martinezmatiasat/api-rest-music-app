@@ -44,7 +44,7 @@ const createAlbum = async (req, res) => {
       albumData.image = req.file.filename;
     }
 
-    const validation = validateAlbum(albumData);
+    const validation = await validateAlbum(albumData);
     if (!validation.ok) {
       return res.status(400).json({ message: validation.message });
     }
@@ -63,7 +63,7 @@ const updateAlbum = async (req, res) => {
   try {
     const albumId = req.params.id;
 
-    const updateData = { 
+    const updateData = {
       ...req.body,
       year: parseInt(req.body.year, 10),
       songs: JSON.parse(req.body.songs)
@@ -73,7 +73,7 @@ const updateAlbum = async (req, res) => {
       updateData.image = req.file.filename;
     }
 
-    const validation = validateAlbum(updateData);
+    const validation = await validateAlbum(updateData);
     if (!validation.ok) {
       return res.status(400).json({ message: validation.message });
     }
@@ -83,7 +83,7 @@ const updateAlbum = async (req, res) => {
       return res.status(404).json({ message: 'Álbum no encontrado.' });
     }
 
-    if (album.image && updateData.image) {
+    if (album.image && req.file) {
       deleteFile(album.image);
     }
 
@@ -110,7 +110,7 @@ const deleteAlbum = async (req, res) => {
       deleteFile(album.image);
     }
 
-    await album.remove();
+    await album.deleteOne();
 
     return res.status(200).json({ message: 'Álbum eliminado exitosamente.', result: album });
   } catch (error) {

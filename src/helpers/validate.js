@@ -1,4 +1,5 @@
 const validator = require('validator');
+const mongoose = require('mongoose');
 
 const validateUser = (user) => {
   if (!user.name) {
@@ -100,7 +101,7 @@ const validateArtist = (artist) => {
   return { ok: true };
 };
 
-const validateAlbum = (album) => {
+const validateAlbum = async (album) => {
   if (!album.title) {
     return { ok: false, message: 'El título es obligatorio.' };
   } else if (typeof album.title !== 'string') {
@@ -111,8 +112,8 @@ const validateAlbum = (album) => {
 
   if (!album.artist) {
     return { ok: false, message: 'El artista es obligatorio.' };
-  } else if (typeof album.artist !== 'string') {
-    return { ok: false, message: 'El artista debe ser una cadena de texto.' };
+  } else if (!mongoose.Types.ObjectId.isValid(album.artist)) {
+    return { ok: false, message: 'El artista no es válido.' };
   }
 
   if (!album.description) {
@@ -131,6 +132,17 @@ const validateAlbum = (album) => {
 
   if (album.image && !/\.(jpg|jpeg|png|gif)$/i.test(album.image)) {
     return { ok: false, message: 'La imagen debe tener un formato válido (jpg, jpeg, png, gif).' };
+  }
+
+  if (album.songs !== undefined) {
+    if (!Array.isArray(album.songs)) {
+      return { ok: false, message: 'Las canciones no son válidas.' };
+    }
+    for (const s of album.songs) {
+      if (!mongoose.Types.ObjectId.isValid(s)) {
+        return { ok: false, message: 'Las canciones no son válidas.' };
+      }
+    }
   }
 
   return { ok: true };

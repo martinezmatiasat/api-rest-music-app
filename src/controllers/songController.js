@@ -37,6 +37,21 @@ const getSongById = async (req, res) => {
   }
 };
 
+const getSongsByArtist = async (req, res) => {
+  try {
+    const artistId = req.params.artistId;
+
+    const songs = await Song.find({ artist: artistId });
+    songs.forEach(song => {
+      song.duration = formatDuration(song.duration);
+    });
+
+    return res.status(200).json({ message: 'Canciones obtenidas exitosamente.', result: songs });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error en la solicitud.', error: error.message });
+  }
+};
+
 // Post
 const createSong = async (req, res) => {
   try {
@@ -79,12 +94,17 @@ const updateSong = async (req, res) => {
       updateData.audio = req.file.filename;
     }
 
+    const validation = validateSong(updateData);
+    if (!validation.ok) {
+      return res.status(400).json({ message: validation.message });
+    }
+
     const song = await Song.findById(songId);
     if (!song) {
       return res.status(404).json({ message: 'Canción no encontrada.' });
     }
 
-    if (song.audio && updateData.audio) {
+    if (song.audio && req.file) {
       deleteFile(song.audio);
     }
 
@@ -111,7 +131,7 @@ const deleteSong = async (req, res) => {
       deleteFile(song.audio);
     }
 
-    await song.remove();
+    await song.deleteOne();
 
     return res.status(200).json({ message: 'Canción eliminada exitosamente.', result: song });
   } catch (error) {
@@ -124,6 +144,7 @@ module.exports = {
   createSong,
   getSongs,
   getSongById,
+  getSongsByArtist,
   updateSong,
   deleteSong
 };

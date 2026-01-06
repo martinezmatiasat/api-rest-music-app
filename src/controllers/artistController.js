@@ -72,7 +72,7 @@ const updateArtist = async (req, res) => {
       return res.status(404).json({ message: 'Artista no encontrado.' });
     }
 
-    if (artist.image && updateData.image) {
+    if (artist.image && req.file) {
       deleteFile(artist.image);
     }
 
@@ -99,7 +99,7 @@ const deleteArtist = async (req, res) => {
       deleteFile(artist.image);
     }
 
-    await artist.remove();
+    await artist.deleteOne();
 
     return res.status(200).json({ message: 'Artista eliminado exitosamente.', result: artist });
   } catch (error) {
