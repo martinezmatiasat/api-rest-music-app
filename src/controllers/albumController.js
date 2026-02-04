@@ -9,7 +9,7 @@ const test = (req, res) => {
 
 const getAlbums = async (req, res) => {
   try {
-    const albums = await Album.find().populate('artist').populate('songs');
+    const albums = await Album.find();
     return res.status(200).json({ message: 'Álbumes obtenidos exitosamente.', result: albums });
   } catch (error) {
     return res.status(500).json({ message: 'Error en la solicitud.', error: error.message });
